@@ -1,7 +1,7 @@
 # Second semester - Computer science project
  
 ## Collaborators
-[Claudius](https://github.com/neToX-livee)
+[Claudius](https://github.com/neToX-live)
 [Yannick](https://github.com/Feruki)
 [Justin](https://github.com/JHikyu)
 
