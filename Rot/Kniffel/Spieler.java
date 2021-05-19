@@ -11,6 +11,10 @@ public class Spieler {
         }
     }
 
+
+    public void setName(String name) {
+        this.name = name;
+    }
     public String getName() {
         return this.name;
     }
@@ -23,17 +27,19 @@ public class Spieler {
         this.karte.print();
     }
 
-    public void rollAll() {
+
+    
+    public void restWuerfeln() {
         //? Gehe durch alle wuerfel vom Spieler
         for(int i = 0 ; i < this.wuerfel.length ; i++) {
 
             //? Wenn wuerfel nicht abgelegt -> rollen!
-            if(wuerfel[i].isAbgelegt() == false)
-                wuerfel[i].roll();
+            if(wuerfel[i].istAbgelegt() == false)
+                wuerfel[i].wuerfeln();
         }
     }
 
-    public int getAugenzahl() {
+    public int getAlleAugenzahl() {
         //? Zaehle alle augenzahlen auf
         int c = 0;
         for(int i = 0 ; i < this.wuerfel.length ; i++) {

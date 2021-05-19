@@ -1,11 +1,28 @@
 class Kniffel {
     private static Spieler[] alleSpieler = new Spieler[8];
-    private static int turn = -1;
+    private static int turn = 0;
     private static int length = 0;
+
+
+/**
+ *! Menue
+ * 
+ **(1) Start - (2) Einstellungen - (3) Beenden
+ *?Startet spiel   anzahl spieler     sys.exit(1)
+ *?                 vereinfacht
+ *?                  
+ * 
+ * 
+ *! Spiel start
+ *
+ */
+
+
 
 
     public static void main(String[] args) {
         addSpieler("Hikyu");
+        alleSpieler[0].getKarte().print();
     }
 
     public static boolean addSpieler(String name) {
@@ -39,7 +56,7 @@ class Kniffel {
     }
 
     public static int nextTurn() {
-        if(++turn > length)
+        if(turn++ > length)
             turn = 0;
         return turn;
     }

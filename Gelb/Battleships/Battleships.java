@@ -7,6 +7,7 @@ class Battleships {
     private static boolean turn;
     private static Scanner sc = new Scanner(System.in);
 
+
     public static void main(String[] args) {
         menu();
     }
@@ -29,6 +30,7 @@ class Battleships {
                         game(2);
                         break;
                     case 3:
+                        //TODO: 
                         player1.setPlayer();
                         player2.setRobot(true); //* (isSmart = true) -> targetedShots
                         game(2);

@@ -8,11 +8,15 @@ public class Wuerfel {
 
     Wuerfel() {}
 
-    public boolean isAbgelegt() {
+    public boolean istAbgelegt() {
         return this.abgelegt;
     }
 
-    public int roll() {
+    public void setAblegen(boolean abgelegt) {
+        this.abgelegt = abgelegt;
+    }
+
+    public int wuerfeln() {
         this.zahl = 1 + random.nextInt(6);
         return this.zahl;
     }
