@@ -1,39 +1,8 @@
-import java.util.Arrays;
-
 class SpielerSchlau extends Spieler {
-
 
     SpielerSchlau(Spielblock block) {
         super(block);
     }
-
-    protected void entscheideBehalten(int[] werte, boolean[] behalten) {
-        int[] anzahlAugen = new int[6];
-        for(int i = 0 ; i < werte.length ; i++) {
-            anzahlAugen[werte[i]-1] += 1;
-        }
-        int meisteAnzahlAugen = -1;
-        int meisteAnzahlAugenzahl = -1;
-        for(int i = 0 ; i < anzahlAugen.length ; i++) {
-            if(anzahlAugen[i] > meisteAnzahlAugen ) {
-                meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
-                meisteAnzahlAugenzahl = i+1;
-            }
-        }
-        if(meisteAnzahlAugen > 2) {
-            for(int i = 0 ; i < behalten.length ; i++) {
-                if(werte[i] == meisteAnzahlAugenzahl) {
-                    behalten[i] = true;
-                }
-            }
-        }
-
-
-        // for(int i = 0 ; i < behalten.length ; i++) {
-        //     behalten[i] = false;
-        // }
-    }
-
     protected void entscheideFeld(int[] werte) {
         int[] anzahlAugen = new int[6];
         for(int i = 0 ; i < werte.length ; i++) {
@@ -63,30 +32,30 @@ class SpielerSchlau extends Spieler {
 
         // if kniffel nicht belegt
         if(getBlock().getZeilen() == 14) {
-            if(istBelegt(getBlock().KNIFFEL) == false && meisteAnzahlAugen == 5) {
-                getBlock().setWert(getRunde(), getBlock().KNIFFEL, werte);
+            if(istBelegt(Spielblock.KNIFFEL) == false && meisteAnzahlAugen == 5) {
+                getBlock().setWert(getRunde(), Spielblock.KNIFFEL, werte);
             }
-            else if(istBelegt(getBlock().VIERERPASCH) == false && meisteAnzahlAugen >= 4) {
-                getBlock().setWert(getRunde(), getBlock().VIERERPASCH, werte);
+            else if(istBelegt(Spielblock.VIERERPASCH) == false && meisteAnzahlAugen >= 4) {
+                getBlock().setWert(getRunde(), Spielblock.VIERERPASCH, werte);
             }
-            else if(istBelegt(getBlock().DREIERPASCH) == false & meisteAnzahlAugen >= 3) {
-                getBlock().setWert(getRunde(), getBlock().DREIERPASCH, werte);
+            else if(istBelegt(Spielblock.DREIERPASCH) == false & meisteAnzahlAugen >= 3) {
+                getBlock().setWert(getRunde(), Spielblock.DREIERPASCH, werte);
             }
-            else if(istBelegt(getBlock().FULLHOUSE) == false && meisteAnzahlAugen == 3 && fullHouse == true) {
-                getBlock().setWert(getRunde(), getBlock().FULLHOUSE, werte);
+            else if(istBelegt(Spielblock.FULLHOUSE) == false && meisteAnzahlAugen == 3 && fullHouse == true) {
+                getBlock().setWert(getRunde(), Spielblock.FULLHOUSE, werte);
             }
-            else if(istBelegt(getBlock().GROSSESTRASSE) == false && meisteAnzahlAugen == 1 && (anzahlAugen[0] == 0 || anzahlAugen[5] == 0)) {
-                getBlock().setWert(getRunde(), getBlock().GROSSESTRASSE, werte);
+            else if(istBelegt(Spielblock.GROSSESTRASSE) == false && meisteAnzahlAugen == 1 && (anzahlAugen[0] == 0 || anzahlAugen[5] == 0)) {
+                getBlock().setWert(getRunde(), Spielblock.GROSSESTRASSE, werte);
             }
-            else if(istBelegt(getBlock().KLEINESTRASSE) == false && meisteAnzahlAugen <= 2 && nacheinander == 4) {
-                getBlock().setWert(getRunde(), getBlock().KLEINESTRASSE, werte);
+            else if(istBelegt(Spielblock.KLEINESTRASSE) == false && meisteAnzahlAugen <= 2 && nacheinander == 4) {
+                getBlock().setWert(getRunde(), Spielblock.KLEINESTRASSE, werte);
                 
             }
             else if(istBelegt(meisteAnzahlAugenzahl-1) == false) { // mAA = [max. = 5, min. = 1]
                 getBlock().setWert(getRunde(), meisteAnzahlAugenzahl-1, werte);
             }
-            else if(istBelegt(getBlock().CHANCE) == false) {
-                getBlock().setWert(getRunde(), getBlock().CHANCE, werte);
+            else if(istBelegt(Spielblock.CHANCE) == false) {
+                getBlock().setWert(getRunde(), Spielblock.CHANCE, werte);
             } 
             else {
                 // einer bis sechser checken und eintragen
@@ -107,7 +76,7 @@ class SpielerSchlau extends Spieler {
                     while(istBelegt(rnd) || rnd == 6);
     
     
-                    getBlock().setSingleWert(getRunde(), rnd, 0);
+                    getBlock().streichen(getRunde(), rnd);
                 }
             }
         }
@@ -135,9 +104,35 @@ class SpielerSchlau extends Spieler {
                     while(istBelegt(rnd) || rnd == 6);
     
     
-                    getBlock().setSingleWert(getRunde(), rnd, 0);
+                    getBlock().streichen(getRunde(), rnd);
                 }
             }
         }
+    }
+    protected void entscheideBehalten(int[] werte, boolean[] behalten) {
+        int[] anzahlAugen = new int[6];
+        for(int i = 0 ; i < werte.length ; i++) {
+            anzahlAugen[werte[i]-1] += 1;
+        }
+        int meisteAnzahlAugen = -1;
+        int meisteAnzahlAugenzahl = -1;
+        for(int i = 0 ; i < anzahlAugen.length ; i++) {
+            if(anzahlAugen[i] > meisteAnzahlAugen ) {
+                meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
+                meisteAnzahlAugenzahl = i+1;
+            }
+        }
+        if(meisteAnzahlAugen > 2) {
+            for(int i = 0 ; i < behalten.length ; i++) {
+                if(werte[i] == meisteAnzahlAugenzahl) {
+                    behalten[i] = true;
+                }
+            }
+        }
+
+
+        // for(int i = 0 ; i < behalten.length ; i++) {
+        //     behalten[i] = false;
+        // }
     }
 }

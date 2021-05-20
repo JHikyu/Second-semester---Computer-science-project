@@ -8,11 +8,9 @@ abstract class Spieler {
     Spieler(Spielblock block) {
         this.block = block;
     }
-
     public Spielblock getBlock() {
         return this.block;
     }
-
     public void zugAusfuehren() {
         boolean[] behalten = new boolean[5]; // 5x false
 
@@ -26,15 +24,9 @@ abstract class Spieler {
 
         entscheideFeld(wuerfel);
     }
-
-    protected void entscheideBehalten(int[] werte, boolean[] behalten) {
-        //TODO
-    }
-
-    protected void entscheideFeld(int[] werte) {
-        //TODO
-    }
-
+    abstract protected void entscheideBehalten(int[] werte, boolean[] behalten);
+    abstract protected void entscheideFeld(int[] werte); 
+    
     protected void wuerfeln(int[] werte, boolean[] behalten) {
         for(int i = 0 ; i < werte.length ; i++) {
             if(behalten[i] == false) {
@@ -42,13 +34,11 @@ abstract class Spieler {
             }
         }
     }
-
     public boolean istBelegt(int position) {
         if(getBlock().getWert(getRunde(), position) == -1)
             return false;
         return true;
     }
-
     public int getRunde() {
         int runde = 0;
         for(int i = 0 ; i < getBlock().getSpalten(); i++) {
@@ -70,42 +60,3 @@ abstract class Spieler {
         return runde;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

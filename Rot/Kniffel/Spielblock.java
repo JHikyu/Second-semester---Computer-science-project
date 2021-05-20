@@ -32,23 +32,15 @@ class Spielblock {
             punkte[i] = zeile;
         }
     }
-
     public int getSpalten() {
         return punkte.length;
     }
-
     public int getZeilen() {
         return punkte[0].length;
     }
-
     public int getWert(int spalte, int position) {
         return this.punkte[spalte][position];
     }
-    
-    public void setSingleWert(int spalte, int position, int wert) {
-        this.punkte[spalte][position] = wert;
-    }
-
     public int getSumme() {
         //? Alle felder der Karte zusammen
         int c = 0;
@@ -59,28 +51,163 @@ class Spielblock {
         }
         return c;
     }
+    public void setWert(int spalte, int position, int[] wert) {
+        int sum = 0;
+        int[] anzahlAugen = new int[6];
+        for(int i = 0 ; i < wert.length ; i++) {
+            anzahlAugen[wert[i]-1] += 1;
+        }
+        int meisteAnzahlAugen;
+        int nacheinander;
 
-    public int getRunde() {
-        int runde = 0;
-        for(int i = 0 ; i < getSpalten() ; i++) {
 
-            boolean istVoll = true;
+        switch(position) {
+            case EINER: 
+            case ZWEIER:
+            case DREIER:
+            case VIERER:
+            case FUENFER:
+            case SECHSER:
+                for(int i = 0 ; i < wert.length ; i++) {
+                    if(wert[i] == position+1)
+                        sum += wert[i];
+                }
+                this.punkte[spalte][position] = sum;
+                break;
+                
+            //? Bonus kann nicht eingetragen werden
+            case BONUS:
+                break;
+            case DREIERPASCH:
+                //? zahl egal hauptsache 3 oder 4
+                meisteAnzahlAugen = -1;
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
+                        meisteAnzahlAugen = anzahlAugen[i];
+                    }
+                }
 
-            for(int x = 0 ; x < getZeilen() ; x++) {
-                if(getWert(i, x) == -1)
-                    istVoll = false;
-            }
+                if(meisteAnzahlAugen >= 3) {
+                    for(int i = 0 ; i < wert.length ; i++) {
+                        sum += wert[i];
+                    }
+                    this.punkte[spalte][position] = sum;
+                }
+                else {
+                    this.punkte[spalte][position] = 0;
+                    break;
+                }
+                break;
+            case VIERERPASCH:
 
-            if(istVoll == false)
-                return runde;
+                //? zahl egal hauptsache 3 oder 4
+                meisteAnzahlAugen = -1;
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
+                        meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
+                    }
+                }
 
-            runde += 1;
+                // wenn wir wirklich einen pasch haben
+                if(meisteAnzahlAugen >= 4) {
+                    for(int i = 0 ; i < wert.length ; i++) {
+                        sum += wert[i];
+                    }
+                    this.punkte[spalte][position] = sum;
+                }
+                else {
+                    this.punkte[spalte][position] = 0;
+                    break;
+                }
+                break;
+            case FULLHOUSE:
+
+                int c = 0; //? c sollte bei fullhouse 2 sein.
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > 1) {
+                        c += 1;
+                    }
+                    else if(anzahlAugen[i] == 1) {
+                        c = 0;
+                        break;
+                    }
+                }
+
+                //? Wenn c == 2 -> fullhouse!
+                if(c == 2) {
+                    this.punkte[spalte][position] = 25;
+                }
+                else {
+                    this.punkte[spalte][position] = 0;
+                }
+                break;
+            case KLEINESTRASSE:
+                nacheinander = 0;                
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > 0)
+                        nacheinander += 1;
+                    else
+                        nacheinander = 0;
+                }
+                if(nacheinander == 4) 
+                    this.punkte[spalte][position] = 30;
+                else
+                    this.punkte[spalte][position] = 0; 
+                break;
+            case GROSSESTRASSE:
+                nacheinander = 0;                
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > 0)
+                        nacheinander += 1;
+                    else
+                        nacheinander = 0;
+                }
+                if(nacheinander == 5)
+                    this.punkte[spalte][position] = 40;
+                else {
+                    this.punkte[spalte][position] = 0;
+                }
+                break;
+            case KNIFFEL:
+                //? zahl egal hauptsache 3 oder 4
+                meisteAnzahlAugen = -1;
+                for(int i = 0 ; i < anzahlAugen.length ; i++) {
+                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
+                        meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
+                    }
+                }
+
+                // wenn wir wirklich einen pasch haben
+                if(meisteAnzahlAugen == 5) {
+                    this.punkte[spalte][position] = 50;
+                }
+                else {
+                    this.punkte[spalte][position] = 0;
+                    break;
+                }
+
+                break;
+            case CHANCE:
+                for(int i = 0 ; i < wert.length ; i++) {
+                    sum += wert[i];
+                }
+                this.punkte[spalte][position] = sum;
+                break;
+            default:
+                break;
 
         }
 
-        return runde;
-    }
 
+        //? Wenn alle Einer, Zweier, Dreier, Vierer, Fünfer, Sechser summiert >=63 sind -> Bonus = 35, sofern Bonus noch leer ist
+        if(punkte[spalte][EINER] + punkte[spalte][ZWEIER] + punkte[spalte][DREIER] + punkte[spalte][VIERER] + punkte[spalte][FUENFER] + punkte[spalte][SECHSER] >= 63) {
+            punkte[spalte][BONUS] = 35;
+        } else {
+            punkte[spalte][BONUS] = 0;
+        }
+
+
+    }
     public void ausgeben(int spielerNummer) {
 
         System.out.printf("\t\tSpieler  %d - Spielblock\n        -------------------------------------------\n", spielerNummer);
@@ -133,7 +260,7 @@ class Spielblock {
         }
         System.out.println(spieleZeile + "35 Punkte, wenn oben mindestends 63 Punkte");
          
-        if(getZeilen() == 14) {
+        if(getZeilen() == 14) { 
 
             spieleZeile = "        -------------------------------------------\n  Dreierpasch\t";
             for(int i = 0 ; i < getSpalten() ; i++) {
@@ -185,7 +312,29 @@ class Spielblock {
 
     }
 
- 
+    public void streichen(int spalte, int position) {
+        this.punkte[spalte][position] = 0;
+    }
+    public int getRunde() {
+        int runde = 0;
+        for(int i = 0 ; i < getSpalten() ; i++) {
+
+            boolean istVoll = true;
+
+            for(int x = 0 ; x < getZeilen() ; x++) {
+                if(getWert(i, x) == -1)
+                    istVoll = false;
+            }
+
+            if(istVoll == false)
+                return runde;
+
+            runde += 1;
+
+        }
+
+        return runde;
+    }
     public int kannEintragenCount(int runde, int[] wert) {
         int count = 0;
 
@@ -195,16 +344,16 @@ class Spielblock {
 
             //? einer bis sechser
             if(a >= EINER && a <= SECHSER) {
-                int einerBisSecherCount = 0;
+                int einerBisSechserCount = 0;
                 for(int b = 0 ; b < wert.length ; b++)
                     if(wert[b] == a+1)
-                        einerBisSecherCount += 1;
-                if(punkte[runde][a] == LEER && einerBisSecherCount > 0)
+                        einerBisSechserCount += 1;
+                if(punkte[runde][a] == LEER && einerBisSechserCount > 0)
                     count += 1;
             }
 
             //? dreier-/viererpasch
-            if(a == DREIERPASCH || a == VIERERPASCH) {
+            if(a == DREIERPASCH || a == VIERERPASCH) { // dreierpasch index = 7, vierer.. = 8
                 int[] anzahlAugen = new int[6];
                 for(int i = 0 ; i < wert.length ; i++) {
                     anzahlAugen[wert[i]-1] += 1;
@@ -216,26 +365,23 @@ class Spielblock {
                         meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
                     }
                 }
-                // wenn wir wirklich einen pasch haben
                 if(punkte[runde][a] == LEER && meisteAnzahlAugen >= a-4) {
                     count += 1;
                 }
             }
 
             //? Kniffel
-            if(a == KNIFFEL) {
+            if(a == KNIFFEL) { // index = 12
                 int[] anzahlAugen = new int[6];
                 for(int i = 0 ; i < wert.length ; i++) {
                     anzahlAugen[wert[i]-1] += 1;
                 }
-                //? zahl egal hauptsache 3 oder 4
                 int meisteAnzahlAugen = -1;
                 for(int i = 0 ; i < anzahlAugen.length ; i++) {
                     if(anzahlAugen[i] >  meisteAnzahlAugen) {
                         meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
                     }
                 }
-                // wenn wir wirklich einen pasch haben
                 if(punkte[runde][a] == LEER && meisteAnzahlAugen == a-7) {
                     count += 1;
                 }
@@ -291,211 +437,5 @@ class Spielblock {
 
 
         return count;
-    }
-    
-
-    public void setWert(int spalte, int position, int[] wert) {
-        // spalte = runde
-        // position = [EINER, ZWEIER, DREIER, ...]
-        // wert = [1, 4, 4, 6, 2]
-        int sum = 0;
-        int[] anzahlAugen;
-        int meisteAnzahlAugen;
-        int nacheinander;
-
-
-        switch(position) {
-            case EINER: 
-            case ZWEIER:
-            case DREIER:
-            case VIERER:
-            case FUENFER:
-            case SECHSER:
-                for(int i = 0 ; i < wert.length ; i++) {
-                    if(wert[i] == position+1)
-                        sum += wert[i];
-                }
-                this.punkte[spalte][position] = sum;
-                break;
-                
-            //? Bonus kann nicht eingetragen werden
-            case BONUS:
-                break;
-            case DREIERPASCH:
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) {
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-
-                //? zahl egal hauptsache 3 oder 4
-                meisteAnzahlAugen = -1;
-                for(int i = 0 ; i < anzahlAugen.length ; i++) {
-                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
-                        meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
-                    }
-                }
-
-                // wenn wir wirklich einen pasch haben
-                if(meisteAnzahlAugen >= 3) {
-                    for(int i = 0 ; i < wert.length ; i++) {
-                        sum += wert[i];
-                    }
-                    this.punkte[spalte][position] = sum;
-                }
-                else {
-                    this.punkte[spalte][position] = 0;
-                    break;
-                }
-                break;
-            case VIERERPASCH: // [1, 4, 4, 6, 2] wird zu [1, 1, 0, 2, 0, 1]
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) {
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-
-                //? zahl egal hauptsache 3 oder 4
-                meisteAnzahlAugen = -1;
-                for(int i = 0 ; i < anzahlAugen.length ; i++) {
-                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
-                        meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
-                    }
-                }
-
-                // wenn wir wirklich einen pasch haben
-                if(meisteAnzahlAugen >= 4) {
-                    for(int i = 0 ; i < wert.length ; i++) {
-                        sum += wert[i];
-                    }
-                    this.punkte[spalte][position] = sum;
-                }
-                else {
-                    this.punkte[spalte][position] = 0;
-                    break;
-                }
-                break;
-            case FULLHOUSE:
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) {
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-
-                int c = 0; //? c sollte bei fullhouse 2 sein.
-                for(int i = 0 ; i < anzahlAugen.length ; i++) { //[1, 1, 4, 4, 4] >> [2, 0, 0, 3, 0, 0]
-                    if(anzahlAugen[i] > 1) {
-                        c += 1;
-                    }
-                    else {
-                        if(anzahlAugen[i] == 1)
-                            break;
-                    }
-                }
-
-                //? Wenn c == 2 -> fullhouse!
-                if(c == 2) {
-                    this.punkte[spalte][position] = 25;
-                }
-                else {
-                    this.punkte[spalte][position] = 0;
-                }
-                break;
-            case KLEINESTRASSE:
-                nacheinander = 0;
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) { //[2, 3, 4, 6, 6] -> [0, 1, 1, 1, 0, 2]
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-                
-                for(int i = 0 ; i < anzahlAugen.length ; i++) {
-                    if(anzahlAugen[i] > 0)
-                        nacheinander += 1;
-                    else
-                        nacheinander = 0;
-                }
-                if(nacheinander == 4) 
-                    this.punkte[spalte][position] = 30;
-                else
-                    this.punkte[spalte][position] = 0; 
-                break;
-            case GROSSESTRASSE:
-                nacheinander = 0;
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) { //[2, 3, 4, 6, 6] -> [0, 1, 1, 1, 0, 2]
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-                
-                for(int i = 0 ; i < anzahlAugen.length ; i++) {
-                    if(anzahlAugen[i] > 0)
-                        nacheinander += 1;
-                    else
-                        nacheinander = 0;
-                }
-                if(nacheinander == 5)
-                    this.punkte[spalte][position] = 40;
-                else {
-                    this.punkte[spalte][position] = 0;
-                }
-                break;
-            case KNIFFEL:
-                this.punkte[spalte][position] = 50;
-
-                anzahlAugen = new int[6];
-                for(int i = 0 ; i < wert.length ; i++) {
-                    anzahlAugen[wert[i]-1] += 1;
-                }
-
-                //? zahl egal hauptsache 3 oder 4
-                meisteAnzahlAugen = -1;
-                for(int i = 0 ; i < anzahlAugen.length ; i++) {
-                    if(anzahlAugen[i] > meisteAnzahlAugen ) {
-                        meisteAnzahlAugen = anzahlAugen[i]; // aender biggest[wert] auf den wert vom neuen index
-                    }
-                }
-
-                // wenn wir wirklich einen pasch haben
-                if(meisteAnzahlAugen == 5) {
-                    this.punkte[spalte][position] = 50;
-                }
-                else {
-                    this.punkte[spalte][position] = 0;
-                    break;
-                }
-
-                break;
-            case CHANCE:
-                for(int i = 0 ; i < wert.length ; i++) {
-                    sum += wert[i];
-                }
-                this.punkte[spalte][position] = sum;
-                break;
-            default:
-                break;
-
-        }
-
-
-        //? Wenn alle Einer, Zweier, Dreier, Vierer, Fünfer, Sechser summiert >=63 sind -> Bonus = 35, sofern Bonus noch leer ist
-        if(punkte[spalte][EINER] + punkte[spalte][ZWEIER] + punkte[spalte][DREIER] + punkte[spalte][VIERER] + punkte[spalte][FUENFER] + punkte[spalte][SECHSER] >= 63) {
-            punkte[spalte][BONUS] = 35;
-        } else {
-            punkte[spalte][BONUS] = 0;
-        }
-
-
-    }
-
-    public boolean istDreierpasch(int[] wuerfel) {
-        int zaehler = 0;
-        int testzahl;
-        for (int i = 0; i < wuerfel.length; i++) {
-            testzahl =wuerfel[i];
-            for (int x = 0; x < wuerfel.length; x++) {
-                if (testzahl == wuerfel[x])
-                    zaehler++;
-                if (zaehler == 3)
-                    return true;
-            }
-            zaehler = 0;
-        }
-        return false;
     }
 }

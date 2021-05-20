@@ -4,17 +4,12 @@ class Kniffel {
     private static int SPALTEN = 3;
     private static int ZEILEN = 7;
     private static int SPIELERANZ = 2;
-    private static int zug = 0;
-    // private static int runde = 0;
     private static Spieler[] spielerListe;
-
     private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
         menu();
     }
-
-
     public static void menu() {
 
         System.out.println("        | Kniffel |        ");
@@ -93,8 +88,6 @@ class Kniffel {
 
 
     }
-
-
     public static void game() {
 
         //* spielerListe[0 bis SPIELERANZ-1]
@@ -110,7 +103,7 @@ class Kniffel {
             spielerListe[x].getBlock().ausgeben(x+1);
         }
 
-        //TODO - ins punkte
+        //? ins punkte
         Spieler gewinner = spielerListe[0];
         int gewinnerId = 0;
         for(int i = 0 ; i < spielerListe.length ; i++) {
