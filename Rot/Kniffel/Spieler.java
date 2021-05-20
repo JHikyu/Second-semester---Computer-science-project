@@ -1,51 +1,111 @@
-public class Spieler {
-    private String name;
-    private Karte karte = new Karte(this);
-    private Wuerfel[] wuerfel = new Wuerfel[5];
+import java.util.*;
 
-    Spieler(String name) {
-        this.name = name;
+abstract class Spieler {
+    private Spielblock block;
+    private int[] wuerfel = new int[5];
+    Random random = new Random();
 
-        for(int i = 0 ; i < this.wuerfel.length ; i++) {
-            wuerfel[i] = new Wuerfel();
+    Spieler(Spielblock block) {
+        this.block = block;
+    }
+
+    public Spielblock getBlock() {
+        return this.block;
+    }
+
+    public void zugAusfuehren() {
+        boolean[] behalten = new boolean[5]; // 5x false
+
+        for (int i = 0; i < 3; i ++) {
+            wuerfeln(wuerfel, behalten);
+
+            if (i < 2) {
+                entscheideBehalten(wuerfel, behalten);
+            }
+        }
+
+        entscheideFeld(wuerfel);
+    }
+
+    protected void entscheideBehalten(int[] werte, boolean[] behalten) {
+        //TODO
+    }
+
+    protected void entscheideFeld(int[] werte) {
+        //TODO
+    }
+
+    protected void wuerfeln(int[] werte, boolean[] behalten) {
+        for(int i = 0 ; i < werte.length ; i++) {
+            if(behalten[i] == false) {
+                 werte[i] = 1 + random.nextInt(6);
+            }
         }
     }
 
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getName() {
-        return this.name;
+    public boolean istBelegt(int position) {
+        if(getBlock().getWert(getRunde(), position) == -1)
+            return false;
+        return true;
     }
 
-    public Karte getKarte() {
-        return this.karte;
-    }
+    public int getRunde() {
+        int runde = 0;
+        for(int i = 0 ; i < getBlock().getSpalten(); i++) {
 
-    public void printKarte() {
-        this.karte.print();
-    }
+            boolean istVoll = true;
 
+            for(int x = 0 ; x < getBlock().getZeilen() ; x++) {
+                if(getBlock().getWert(i, x) == -1)
+                    istVoll = false;
+            }
 
-    
-    public void restWuerfeln() {
-        //? Gehe durch alle wuerfel vom Spieler
-        for(int i = 0 ; i < this.wuerfel.length ; i++) {
+            if(istVoll == false)
+                return runde;
 
-            //? Wenn wuerfel nicht abgelegt -> rollen!
-            if(wuerfel[i].istAbgelegt() == false)
-                wuerfel[i].wuerfeln();
+            runde += 1;
+
         }
-    }
 
-    public int getAlleAugenzahl() {
-        //? Zaehle alle augenzahlen auf
-        int c = 0;
-        for(int i = 0 ; i < this.wuerfel.length ; i++) {
-            c += this.wuerfel[i].getZahl();
-        }
-        return c;
+        return runde;
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
